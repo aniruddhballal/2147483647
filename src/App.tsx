@@ -55,7 +55,7 @@ const automata = [
     id: "langton",
     name: "Langton's Ant",
     tag: "2D",
-    description: "A single ant spawns a highway after ~10,000 steps",
+    description: "A single ant spontaneously builds a highway after ~10,000 steps",
     component: LangtonsAnt,
   },
   {
@@ -74,189 +74,101 @@ const tagColors: Record<string, string> = {
 };
 
 export default function App() {
-  const [activeId, setActiveId] = useState("rule30");
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [index, setIndex] = useState(0);
 
-  const active = automata.find((a) => a.id === activeId)!;
+  const prev = useCallback(() => setIndex((i) => (i - 1 + automata.length) % automata.length), []);
+  const next = useCallback(() => setIndex((i) => (i + 1) % automata.length), []);
+
+  const active = automata[index];
   const ActiveComponent = active.component;
-
-  const handleSelect = useCallback((id: string) => {
-    setActiveId(id);
-    setPanelOpen(false);
-  }, []);
+  const tagColor = tagColors[active.tag] ?? "#fff";
 
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", fontFamily: "'Courier New', monospace" }}>
-      {/* Automaton canvas fills the screen */}
-      <div key={activeId} style={{ position: "absolute", inset: 0 }}>
+      {/* Fullscreen canvas */}
+      <div key={active.id} style={{ position: "absolute", inset: 0 }}>
         <ActiveComponent />
       </div>
 
-      {/* Top bar */}
+      {/* Bottom bar */}
       <div style={{
         position: "absolute",
-        top: 0,
+        bottom: 0,
         left: 0,
         right: 0,
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        padding: "16px 20px",
-        background: "linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)",
-        pointerEvents: "none",
+        gap: "16px",
+        padding: "12px 20px",
+        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)",
+        paddingTop: "32px",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{
-            color: "#fff",
-            fontSize: "11px",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            opacity: 0.5,
-          }}>
-            Cellular Automata
-          </span>
-          <span style={{
-            color: tagColors[active.tag] ?? "#fff",
-            fontSize: "10px",
-            letterSpacing: "0.15em",
-            border: `1px solid ${tagColors[active.tag] ?? "#fff"}`,
-            padding: "2px 6px",
-            borderRadius: "2px",
-            opacity: 0.9,
-          }}>
-            {active.tag}
-          </span>
-          <span style={{
-            color: "#fff",
-            fontSize: "15px",
-            fontWeight: "bold",
-            letterSpacing: "0.05em",
-          }}>
-            {active.name}
-          </span>
-        </div>
-
-        <button
-          onClick={() => setPanelOpen((p) => !p)}
-          style={{
-            pointerEvents: "all",
-            background: "rgba(255,255,255,0.1)",
-            border: "1px solid rgba(255,255,255,0.2)",
-            color: "#fff",
-            padding: "6px 14px",
-            fontSize: "11px",
-            letterSpacing: "0.15em",
-            cursor: "pointer",
-            borderRadius: "3px",
-            backdropFilter: "blur(8px)",
-            transition: "background 0.2s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.2)")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
-        >
-          {panelOpen ? "CLOSE" : "SWITCH"}
+        {/* Prev button */}
+        <button onClick={prev} style={btnStyle}>
+          ← prev
         </button>
-      </div>
 
-      {/* Side panel */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        width: "320px",
-        background: "rgba(8, 8, 12, 0.92)",
-        backdropFilter: "blur(20px)",
-        borderLeft: "1px solid rgba(255,255,255,0.08)",
-        transform: panelOpen ? "translateX(0)" : "translateX(100%)",
-        transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "auto",
-        paddingTop: "64px",
-      }}>
-        <div style={{ padding: "0 20px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "10px", letterSpacing: "0.2em", margin: 0 }}>
-            SELECT AUTOMATON
-          </p>
-        </div>
-
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {automata.map((a) => {
-            const isActive = a.id === activeId;
-            return (
-              <button
-                key={a.id}
-                onClick={() => handleSelect(a.id)}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "16px 20px",
-                  background: isActive ? "rgba(255,255,255,0.06)" : "transparent",
-                  border: "none",
-                  borderBottom: "1px solid rgba(255,255,255,0.04)",
-                  borderLeft: isActive ? `2px solid ${tagColors[a.tag] ?? "#fff"}` : "2px solid transparent",
-                  cursor: "pointer",
-                  transition: "background 0.15s",
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) e.currentTarget.style.background = "transparent";
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                  <span style={{
-                    color: tagColors[a.tag] ?? "#fff",
-                    fontSize: "9px",
-                    letterSpacing: "0.15em",
-                    border: `1px solid ${tagColors[a.tag] ?? "#fff"}`,
-                    padding: "1px 5px",
-                    borderRadius: "2px",
-                    opacity: 0.8,
-                  }}>
-                    {a.tag}
-                  </span>
-                  <span style={{
-                    color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
-                    fontSize: "13px",
-                    fontWeight: isActive ? "bold" : "normal",
-                    letterSpacing: "0.05em",
-                  }}>
-                    {a.name}
-                  </span>
-                </div>
-                <p style={{
-                  color: "rgba(255,255,255,0.35)",
-                  fontSize: "11px",
-                  margin: 0,
-                  lineHeight: 1.5,
-                  letterSpacing: "0.02em",
-                }}>
-                  {a.description}
-                </p>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Legend */}
-        <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-          <div style={{ display: "flex", gap: "16px" }}>
-            {Object.entries(tagColors).map(([tag, color]) => (
-              <div key={tag} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                <div style={{ width: "8px", height: "8px", background: color, borderRadius: "1px" }} />
-                <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "10px", letterSpacing: "0.1em" }}>{tag}</span>
-              </div>
-            ))}
+        {/* Info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
+            <span style={{
+              color: tagColor,
+              fontSize: "9px",
+              letterSpacing: "0.18em",
+              border: `1px solid ${tagColor}`,
+              padding: "1px 6px",
+              borderRadius: "2px",
+              flexShrink: 0,
+            }}>
+              {active.tag}
+            </span>
+            <span style={{
+              color: "#fff",
+              fontSize: "14px",
+              fontWeight: "bold",
+              letterSpacing: "0.06em",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}>
+              {active.name}
+            </span>
+            <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "11px", flexShrink: 0 }}>
+              {index + 1} / {automata.length}
+            </span>
           </div>
-          <p style={{ color: "rgba(255,255,255,0.15)", fontSize: "9px", marginTop: "10px", marginBottom: 0, letterSpacing: "0.1em" }}>
-            1D = one-dimensional · 2D = grid · RD = reaction-diffusion
+          <p style={{
+            color: "rgba(255,255,255,0.5)",
+            fontSize: "11px",
+            margin: 0,
+            letterSpacing: "0.03em",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}>
+            {active.description}
           </p>
         </div>
+
+        {/* Next button */}
+        <button onClick={next} style={btnStyle}>
+          next →
+        </button>
       </div>
     </div>
   );
 }
+
+const btnStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.18)",
+  color: "#fff",
+  padding: "7px 16px",
+  fontSize: "11px",
+  letterSpacing: "0.12em",
+  cursor: "pointer",
+  borderRadius: "3px",
+  backdropFilter: "blur(8px)",
+  flexShrink: 0,
+  transition: "background 0.15s",
+};
