@@ -84,91 +84,84 @@ export default function App() {
   const tagColor = tagColors[active.tag] ?? "#fff";
 
   return (
-    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", fontFamily: "'Courier New', monospace" }}>
+    <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", fontFamily: "'Sora', sans-serif" }}>
       {/* Fullscreen canvas */}
       <div key={active.id} style={{ position: "absolute", inset: 0 }}>
         <ActiveComponent />
       </div>
 
-      {/* Bottom bar */}
+      {/* Floating capsule */}
       <div style={{
         position: "absolute",
-        bottom: 0,
-        left: 0,
-        right: 0,
+        bottom: "28px",
+        left: "50%",
+        transform: "translateX(-50%)",
         display: "flex",
         alignItems: "center",
-        gap: "16px",
-        padding: "12px 20px",
-        background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 70%, transparent 100%)",
-        paddingTop: "32px",
+        gap: "0",
+        borderRadius: "999px",
+        background: "rgba(10, 10, 14, 0.82)",
+        backdropFilter: "blur(16px)",
+        border: "1px solid rgba(255,255,255,0.12)",
+        boxShadow: "0 4px 32px rgba(0,0,0,0.5)",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
       }}>
-        {/* Prev button */}
-        <button onClick={prev} style={btnStyle}>
-          ← prev
+        {/* Prev */}
+        <button onClick={prev} style={arrowBtnStyle}>
+          ‹
         </button>
 
+        {/* Divider */}
+        <div style={{ width: "1px", height: "36px", background: "rgba(255,255,255,0.1)", flexShrink: 0 }} />
+
         {/* Info */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "2px" }}>
+        <div style={{ padding: "10px 20px", textAlign: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
             <span style={{
               color: tagColor,
               fontSize: "9px",
               letterSpacing: "0.18em",
               border: `1px solid ${tagColor}`,
               padding: "1px 6px",
-              borderRadius: "2px",
-              flexShrink: 0,
+              borderRadius: "999px",
             }}>
               {active.tag}
             </span>
-            <span style={{
-              color: "#fff",
-              fontSize: "14px",
-              fontWeight: "bold",
-              letterSpacing: "0.06em",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}>
+            <span style={{ color: "#fff", fontSize: "13px", fontWeight: "bold", letterSpacing: "0.06em" }}>
               {active.name}
             </span>
-            <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "11px", flexShrink: 0 }}>
-              {index + 1} / {automata.length}
+            <span style={{ color: "#fff", fontSize: "10px", opacity: 0.5 }}>
+              {index + 1}/{automata.length}
             </span>
           </div>
-          <p style={{
-            color: "rgba(255,255,255,0.5)",
-            fontSize: "11px",
-            margin: 0,
-            letterSpacing: "0.03em",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}>
+          <p style={{ color: "#fff", fontSize: "11px", margin: "3px 0 0", letterSpacing: "0.02em" }}>
             {active.description}
           </p>
         </div>
 
-        {/* Next button */}
-        <button onClick={next} style={btnStyle}>
-          next →
+        {/* Divider */}
+        <div style={{ width: "1px", height: "36px", background: "rgba(255,255,255,0.1)", flexShrink: 0 }} />
+
+        {/* Next */}
+        <button onClick={next} style={arrowBtnStyle}>
+          ›
         </button>
       </div>
     </div>
   );
 }
 
-const btnStyle: React.CSSProperties = {
-  background: "rgba(255,255,255,0.08)",
-  border: "1px solid rgba(255,255,255,0.18)",
+const arrowBtnStyle: React.CSSProperties = {
+  background: "transparent",
+  border: "none",
   color: "#fff",
-  padding: "7px 16px",
-  fontSize: "11px",
-  letterSpacing: "0.12em",
+  padding: "0 20px",
+  fontSize: "22px",
   cursor: "pointer",
-  borderRadius: "3px",
-  backdropFilter: "blur(8px)",
+  height: "56px",
+  display: "flex",
+  alignItems: "center",
+  transition: "color 0.15s, background 0.15s",
   flexShrink: 0,
-  transition: "background 0.15s",
 };
