@@ -116,7 +116,7 @@ export default function App() {
         <div style={{ width: "1px", height: "36px", background: "rgba(255,255,255,0.1)", flexShrink: 0 }} />
 
         {/* Info */}
-        <div style={{ padding: "10px 20px", textAlign: "center" }}>
+        <div style={{ padding: "10px 20px", textAlign: "center", width: "440px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
             <span style={{
               color: tagColor,
