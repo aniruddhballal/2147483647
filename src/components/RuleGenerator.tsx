@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
 const PATTERNS: [number, number, number][] = [
-  [1, 1, 1], [1, 1, 0], [1, 0, 1], [1, 0, 0],
-  [0, 1, 1], [0, 1, 0], [0, 0, 1], [0, 0, 0],
+  [1,1,1], [1,1,0], [1,0,1], [1,0,0],
+  [0,1,1], [0,1,0], [0,0,1], [0,0,0],
 ];
 
 const patternIndex = (a: number, b: number, c: number): number =>
